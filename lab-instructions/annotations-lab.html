@@ -1,0 +1,189 @@
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <title>Configuration with annotations</title><link rel="stylesheet" href="css/html.css" type="text/css"><meta name="generator" content="DocBook XSL Stylesheets V1.70.0"><link rel="start" href="index.html" title="Core Spring Training - Lab Documentation"><link rel="up" href="index.html" title="Core Spring Training - Lab Documentation"><link rel="prev" href="xml-dependency-best-practices.html" title="Dependency Injection Best Practices"><link rel="next" href="test-lab.html" title="Integration Testing with Profiles"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div xmlns="http://www.w3.org/TR/xhtml1/transitional" style="background-color:white;border:none;height:73px;border:1px solid black;"><a style="border:none;" href="http://www.springframework.org/" title="The Spring Framework"><img style="border:none;" src="images/xdev-spring_logo.jpg"></img></a><a style="border:none;" href="http://www.springsource.com/" title="SpringSource"><img style="border:none;position:absolute;padding-top:5px;right:42px;" src="images/springsource-banner-rhs.jpg"></img></a></div><div class="chapter" lang="en"><div class="titlepage"><div><div><h2 class="title"><a name="annotations-lab"></a>Configuration with annotations</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="annotations-lab-introduction"></a>1.&nbsp;Introduction</h2></div></div></div><p>In this lab you will gain experience using the annotation support
+    from Spring to configure the rewards application. You will use an existing
+    setup and transform that to use annotations such as
+    <code class="literal">@Autowired</code>, <code class="literal">@Repository</code> and
+    <code class="literal">@Service</code> to configure the components of the
+    application. You will then run a top-down system test that uses JUnit
+    4.</p><div class="orderedlist"><p class="title"><b>What you will learn:</b></p><ol type="1"><li><p>How to use some of Spring's dependency injection annotations
+        such as <code class="literal">@Autowired</code></p></li><li><p>The advantages and drawbacks of those annotations</p></li><li><p>How to implement your own bean lifecycle behaviors</p></li></ol></div><div class="orderedlist"><p class="title"><b>Specific subjects you will gain experience with:</b></p><ol type="1"><li><p>Annotation-based dependency injection</p></li><li><p>How to use Spring component scanning</p></li></ol></div><p>Estimated time to complete: 45 minutes</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="annotations-lab-quick-instructions"></a>2.&nbsp;Quick Instructions</h2></div></div></div><p>If you feel you have a good understanding of the material, you can
+    work with the TODOs listed in the <code class="literal">Tasks</code> view in
+    Eclipse/STS. To display them, click on Window -&gt; Show view -&gt; Tasks.
+    Alternatively, the next section contains more detailed step-by-step
+    instructions. Each task in STS is also described in more detail by a
+    corresponding section in the step-by-step instructions.</p><p>The following sequence diagram will help you to perform the TODOs
+    for implementing the bean life cycle behaviors. 
+	<div xmlns="http://www.w3.org/TR/xhtml1/transitional" style="text-align: center"><div xmlns="" class="figure"><a name="xml-dependency-best-practices-caching-repository-lifecycle-sequence11"></a><div class="figure-contents"><div class="mediaobject" align="center"><img src="images/container-4/caching-repository-lifecycle-sequence.png" align="middle"></div></div><p class="title"><b>Figure&nbsp;12.&nbsp;</b></p></div><br xmlns="" class="figure-break"></div></p><div class="orderedlist"><ol type="1"><li><p><span class="bold"><strong>Verify everything works</strong></span> (<a href="annotations-lab.html#details.verify" title="3.1.1.&nbsp;First verify that everything works">details</a>)</p><p>The project features an integration test that verifies the
+        system's behavior. It's called
+        <code class="classname">RewardNetworkTests</code> and lives in the
+        <code class="classname">rewards</code> package. Run this test by
+        right-clicking on it and selecting 'Run As...' followed by 'JUnit
+        Test'. The test should run successfully.</p></li><li><p><span class="bold"><strong>Dependency injection using Spring's @Autowired annotation</strong></span> (<a href="annotations-lab.html#details.di" title="3.2.&nbsp;Dependency injection using Spring's @Autowired annotation">details</a>)</p><p>Complete the TODO tasks 1-5 and then re-run the <code class="classname">RewardNetworkTests</code> just to make sure you correctly completed these tasks.</p></li><li><p><span class="bold"><strong>Defining Spring beans using component-scanning</strong></span> (<a href="annotations-lab.html#details.comp-scan" title="3.3.&nbsp;Defining Spring beans using component-scanning">details</a>)</p><p>Complete the TODO tasks 6-11 and then re-run <code class="classname">RewardNetworkTests</code> to make sure everything still works.</p></li><li><p><span class="bold"><strong>Working with Init and Destroy callbacks</strong></span> (<a href="annotations-lab.html#details.init-destroy" title="3.4.&nbsp;Working with Init and Destroy callbacks">details</a>)</p><p>Complete TODO tasks 12-16 and the run <code class="classname">RewardNetworkTests</code> one last time to make sure your implementation still works</p></li></ol></div><p>Congratulations, you've completed this lab!</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="annotations-lab-instructions"></a>3.&nbsp;Detailed Instructions</h2></div></div></div><p>Instructions for this lab are divided into four sections. In the
+    first section we will review an existing application configuration and
+    make sure it works correctly. The second section will use Spring's
+    annotations to configure dependency injection of the components of the
+    rewards application. In the third section, you'll configure Spring's
+    component scanning feature to create beans from the application classes
+    automatically. In the fourth section, you'll implement a cache using
+    Spring's bean lifecycle behaviours. We will use a JUnit 4 system test
+    throughout to verify that we haven't broken anything. Have fun!</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="d0e1958"></a>3.1.&nbsp;Reviewing the application</h3></div></div></div><p>In this lab, we are using a version of the
+      <code class="literal">rewards</code> application that is already fully functional.
+      It has repository implementations that are backed by JDBC and which
+      connect to an in-memory embedded HSQLDB database. There is no
+      transactional behavior yet, but we will learn how to define that
+      shortly. We will then rewrite some of the application code to make use
+      of annotations.</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="details.verify"></a>3.1.1.&nbsp;First verify that everything works</h4></div></div></div><p>The project features an integration test that verifies the
+        system's behavior. It's called
+        <code class="classname">RewardNetworkTests</code> and lives in the
+        <code class="classname">rewards</code> package. Run this test by
+        right-clicking on it and selecting 'Run As...' followed by 'JUnit
+        Test'. The test should run successfully.</p><p>Now review the configuration. If you haven't already done so,
+        open the Spring Explorer by going to 'Window', 'Show View' and by
+        selecting the Spring Explorer (sometimes it's not available yet, then
+        you have to select it from the 'Other' option). Open the Spring
+        dependency graph from the Spring Explorer tab that just appeared.
+        Expand 'Beans' and then right-click the <code class="literal">system-test</code>
+        config set and choose <span class="emphasis"><em>Open Graph</em></span>. This should
+        give you a nice overview of the dependencies between the different
+        application and infrastructure components.</p><div class="mediaobject" align="center"><img src="images/container-4/dependency-graph.png" align="middle"><div class="caption"><p>Figure 1: The dependency graph</p></div></div><p>Now open the application configuration (use CTRL+SHIFT+R
+        [Windows] or Command+SHIFT+R [Mac] to quickly navigate to it) called
+        <code class="filename">application-config.xml</code> and review the XML that
+        wires up all the dependencies. As you can see, we're using constructor
+        arguments. We're including the context namespace and are enabling the
+        processing of annotations like <code class="literal">@PostConstruct</code> and
+        <code class="literal">@PreDestroy</code> using the
+        <code class="literal">&lt;context:annotation-config/&gt;</code>
+        directive.</p><p>Remember that the infrastructure components (the DataSource for
+        example) are located in a separate application configuration file. If
+        you navigate back to the test you will see that the
+        <code class="literal">setUp()</code> method specifies the
+        <code class="classname">test-infrastructure-config.xml</code> infrastructure
+        configuration file.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="details.di"></a>3.2.&nbsp;Dependency injection using Spring's <code class="literal">@Autowired</code> annotation</h3></div></div></div><p>So you've fully reviewed the entire application and you've seen
+      nothing out of the ordinary. We're now going to wire the individual
+      components available in the <code class="filename">application-config.xml</code>
+      file using <code class="literal">@Autowired</code>. In
+      <code class="filename">application-config.xml</code>, remove the
+      constructor-arguments and property definitions for all beans (TODO 01). In other
+      words, the only things that'll be left are the bean identifiers and the
+      implementation types.</p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Tip"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="images/tip.png"></td><th align="left">Tip</th></tr><tr><td align="left" valign="top"><p>Note that removing the constructor-arguments on the
+        <code class="classname">RewardNetworkImpl</code> bean should have caused a
+        validation error in the XML. This is because we're now asking Spring
+        to invoke the default constructor in
+        <code class="classname">RewardNetworkImpl</code> and if you look at the Java
+        code, it doesn't have one. SpringSource Tool Suite assists you greatly
+        in this regard to ensure that the coupling between the XML
+        configuration and your Java code are correct.</p></td></tr></table></div><p>Try re-running the test. It should fail now. Spring has no idea
+      how to inject the dependencies anymore, since you have removed the
+      configuration directive. Next, we'll start adding configuration hints
+      using <code class="literal">@Autowired</code>. Previously, we shortly talked about
+      the <code class="literal">&lt;context:annotation-config/&gt;</code> directives in
+      <code class="literal">application-config.xml</code>. This element also processes
+      <code class="classname">@Autowired</code>, so we don't need to further modify
+      the configuration files.</p><p>Open the <code class="classname">RewardNetworkImpl</code> class and
+      annotate its constructor with <code class="interfacename">@Autowired</code> (TODO 02).
+      </p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Tip"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="images/tip.png"></td><th align="left">Tip</th></tr><tr><td align="left" valign="top"><p>Note that this should have fixed the validation error in
+          <code class="filename">application-config.xml</code>. SpringSource Tool Suite
+          understands the @Autowired annotation and uses it in its validation
+          processing.</p><p>Remember that you can quickly navigate from a bean definition
+          to the Java code by pointing the cursor at its class name and
+          pressing F3.</p></td></tr></table></div><p>Now open up <code class="classname">JdbcRewardRepository</code> and
+      annotate the <code class="literal">setDataSource()</code> method with that same
+      <code class="interfacename">@Autowired</code> annotation (TODO 03). This will tell
+      Spring to inject the setter with a instance of a bean matching the
+      <code class="classname">DataSource</code> type. Similarly, annotate the
+      <code class="literal">setDataSource()</code> method of
+      <code class="literal">JdbcAccountRepository</code> class (TODO 04).</p><p>In the <code class="literal">JdbcRestaurantRepository</code> class, annotate
+      the constructor with <code class="literal">@Autowired</code> annotation (TODO 05).</p><p>Now that you've finished adding instructions to automatically wire
+      the dependencies, try to run the integration test again. You should see
+      that it succeeds. </p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Tip"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="images/tip.png"></td><th align="left">Tip</th></tr><tr><td align="left" valign="top"><p>Remember that if you're using configuration annotations such
+          as <code class="interfacename">@Autowired</code>, you have to enable
+          detection of these in your Spring XML configuration somewhere,
+          otherwise they will be ignored.</p></td></tr></table></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="details.comp-scan"></a>3.3.&nbsp;Defining Spring beans using component-scanning</h3></div></div></div><p>As you might have noticed, we have so far only configured
+      dependency injection using annotations. All beans are still declared
+      using XML. In this section, we will look at how to use Spring
+      annotations to create Spring beans automatically from your
+      classes.</p><p>In your <code class="filename">application-config.xml</code> file, remove
+      the <code class="literal">&lt;context:annotation-config/&gt;</code> element and
+      add replace it with: <code class="literal">&lt;context:component-scan base-package="rewards"/&gt;</code> (TODO 06). This configuration directive
+      turns on a feature called component scanning which looks for all classes
+      annotated with annotations such as <code class="literal">@Component</code>,
+      <code class="literal">@Repository</code> or <code class="literal">@Service</code> and
+      creates Spring beans from those classes. It also enables detection of
+      the dependency injection annotations. As a consequence
+      <code class="literal">&lt;context:annotation-config/&gt;</code> is not needed
+      anymore. First re-run the test to ensure that it still passes.</p><p>Now remove all of the bean definitions from the configuration
+      file, leaving just the <code class="literal">&lt;context:component-scan .../&gt;</code> element (TODO 07). The test will now fail. Spring is trying to
+      scan for classes which make up the components of your application, but
+      you haven't yet annotated those classes, which is why the test is
+      failing. So this is the next step. Open the Java types for those bean
+      definitions that you've just removed
+      (<code class="classname">JdbcRestaurantRepository</code>,
+      <code class="classname">JdbcAccountRepository</code>,
+      <code class="classname">RewardNetworkImpl</code> and
+      <code class="classname">JdbcRewardRepository</code>). Annotate all repositories
+      with <code class="interfacename">@Repository</code> (TODO 08, TODO 09, TODO 10) and the service (
+      <code class="classname">RewardNetworkImpl</code>) with
+      <code class="interfacename">@Service</code> (TODO 11). This will allow the component
+      scanning feature to find these components.</p><p>Re-run the test and see that it passes.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="details.init-destroy"></a>3.4.&nbsp;Working with Init and Destroy callbacks</h3></div></div></div><p>In the <a href="reference-domain.html" title="Reward Dining: The Course Reference Domain">reward dining</a>
+      domain, restaurant data is read often but rarely changes. You can browse
+      <code class="classname">JdbcRestaurantRepository</code> and see that it has been implemented 
+      using a simple cache. <code class="classname">Restaurant</code> objects are cached to improve performance 
+      (see methods <code class="literal">populateRestaurantCache</code> and <code class="literal">clearRestaurantCache</code> for more details).
+     </p><p>The cache works as follows:</p><div class="orderedlist"><ol type="1"><li><p>When <code class="classname">JdbcRestaurantRepository</code> is
+          initialized it eagerly populates its cache by loading all
+          restaurants from its
+          <code class="interfacename">DataSource</code>.</p></li><li><p>Each time a finder method is called, it simply queries Restaurant objects from its
+          cache.</p></li><li><p>When the repository is destroyed, the cache should be cleared to
+          release memory.</p></li></ol></div><p>The full sequence is shown below.
+	  <div xmlns="http://www.w3.org/TR/xhtml1/transitional" style="text-align: center"><div xmlns="" class="figure"><a name="xml-dependency-best-practices-caching-repository-lifecycle-sequence"></a><div class="figure-contents"><div class="mediaobject" align="center"><img src="images/container-4/caching-repository-lifecycle-sequence.png" align="middle" alt="The JdbcRestaurantRepository life-cycle"></div></div><p class="title"><b>Figure&nbsp;13.&nbsp;The <code class="classname">JdbcRestaurantRepository</code> life-cycle</b></p></div><br xmlns="" class="figure-break"></div></p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d0e2210"></a>3.4.1.&nbsp;Initialization</h4></div></div></div><p>Open <code class="classname">JdbcRestaurantRepository</code> in the
+        <code class="filename">rewards.internal.restaurant</code> package. Notice that
+        we are using the constructor to inject the dependency. You can run the test 
+        <code class="classname">RewardNetworkTests</code> and see that it works well as it is now.
+        </p><p>
+        However, what if you had decided to use <code class="literal">setter injection</code> instead of <code class="literal">constructor injection</code>?
+        It is interesting to understand what happens then.
+        </p><p>
+        Change the dependency injection style from constructor injection to setter
+        injection (TODO 12):
+        </p><div class="orderedlist"><ol type="1"><li> add <code class="literal">@Autowired</code> to the <code class="literal">setDataSource</code> method </li><li> remove the <code class="literal">Datasource</code> parameter from the constructor (TODO 13). Also remove <code class="literal">@Autowired</code> from the constructor. The constructor should now be as simple as this: <pre class="programlisting">
+public JdbcRestaurantRepository(){
+  this.populateRestaurantCache();
+}
+    </pre></li></ol></div><p>
+  </p><p>Now, execute <code class="classname">RewardNetworkTests</code> to verify. It should fail
+        and you should see a <code class="literal">NullPointerException</code>. Why did
+        the test fail?</p><p>Inside <code class="classname">JdbcRestaurantRepository</code>, the constructor calls <code class="literal">populateRestaurantCache()</code>. Internally, this method uses the
+        <code class="literal">dataSource</code> that you are injecting with the setter.
+        According to the bean lifecycle, the constructor is executed before
+        setter injection. Therefore, while <code class="literal">populateRestaurantCache()</code> 
+        method is called, the <code class="literal">dataSource</code> property has not been injected
+        yet, thus causing <code class="literal">NullPointerException</code>.</p><p>Enhance <code class="classname">JdbcRestaurantRepository</code> as follows:
+        
+        </p><div class="orderedlist"><ol type="1"><li> Upon initialization, the <code class="methodname">populateRestaurantCache</code> method should be called to populate the cache. Make required changes to notify your Spring container that <code class="methodname">populateRestaurantCache</code> should be called at startup time (TODO 14) (you can refer to Core-Spring student manual if needed). </li><li> Inside the constructor, remove the call to <code class="literal">populateRestaurantCache()</code> (you can even remove the constructor altogether because it is empty now). </li><li> Run the <code class="classname">RewardNetworkTests</code> test. If you get the green bar, it means that you've successfully configured the initialization callback. You can then move to the next question. </li></ol></div><p>
+          </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="d0e2307"></a>3.4.2.&nbsp;Destroy</h4></div></div></div><p>Your test seems to run fine, let us now have a closer look. Open
+        <code class="classname">JdbcRestaurantRepository</code> and add a breakpoint
+        inside <code class="classname">clearRestaurantCache</code>. Re-run
+        <code class="classname">RewardNetworkTests</code> in debug mode. As you can
+        see, the method <code class="classname">clearRestaurantCache</code> is not called, which means 
+        that your cache is never cleared.
+        As shown in your student notes, make needed changes to notify the Spring  
+         container that <code class="methodname">clearRestaurantCache</code> should be called at shutdown (TODO 15).
+        </p><p> You can then run your test one more time in debug mode. Unfortunately, it seems that 
+        your destroy callback still isn't called. 
+        </p><p>
+        Destroy callbacks are only called when the <code class="classname">ApplicationContext</code> is closed properly.
+        Let's go back into <code class="classname">RewardNetworkTests</code>. Thanks to the <code class="classname">@After</code> 
+        annotation, the method <code class="literal">tearDown()</code> is called at the end of each test.
+        Inside <code class="literal">tearDown()</code>, add a call to <code class="literal">applicationContext.close()</code> (TODO 16) .
+        </p><p>Run <code class="classname">RewardNetworkTests</code> in debug mode one more time. You should then stop into the 
+         breakpoint, which means that your destroy callback has been called properly.</p><p>
+        </p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Tip"><tr><td rowspan="2" align="center" valign="top" width="25"><img alt="[Tip]" src="images/tip.png"></td><th align="left">Tip</th></tr><tr><td align="left" valign="top"><p>Later in this course, you will learn that there is a more elegant way to work with JUnit: Using the 
+        <code class="classname">@ContextConfiguration</code> annotation, Spring's 
+        <code class="classname">ApplicationContext</code> can actually be opened and closed automatically so you do not have to 
+        do it by hand.
+        </p></td></tr></table></div><p>
+      </p><p>When this is done, you've completed this section! Your
+        repository is being successfully integrated into your application, and
+        Spring is correctly issuing the lifecycle callbacks to populate and
+        clear your cache. Good job!</p></div></div></div></div><div xmlns="http://www.w3.org/TR/xhtml1/transitional" class="navfooter"><hr></hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="xml-dependency-best-practices.html">Prev</a>&nbsp;</td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right">&nbsp;<a accesskey="n" href="test-lab.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Dependency Injection Best Practices&nbsp;</td><td width="20%" align="center"><span style="color:white;font-size:90%;"><a href="http://www.springsource.com/" title="SpringSource">By SpringSource</a></span></td><td width="40%" align="right" valign="top">&nbsp;Integration Testing with Profiles</td></tr></table></div></body></html>
