@@ -7,8 +7,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>../rewards-common</module>
-		<module>../spring-intro</module>
+		<module>rewards-common</module>
+		<module>spring-intro</module>
 	</modules>
 
 	<dependencies>

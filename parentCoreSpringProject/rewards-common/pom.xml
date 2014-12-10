@@ -10,7 +10,6 @@
 		<groupId>com.springsource.training.core-spring</groupId>
 		<artifactId>parentCoreSpringProject</artifactId>
 		<version>3.2.0.CI-SNAPSHOT</version>
-		<relativePath>../parentCoreSpringProject</relativePath>
 	</parent>
 	
 	<build>
