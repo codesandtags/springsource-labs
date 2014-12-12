@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>com.springsource.training.core-spring</groupId>
 			<artifactId>rewards-common</artifactId>
-			<version>3.2.0.CI-SNAPSHOT</version>
+			<version>${rewards-common.version}</version>
 		</dependency>
 	</dependencies>
 

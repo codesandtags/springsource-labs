@@ -39,19 +39,16 @@ public class HibernateAccountManager implements AccountManager {
 				"Created HibernateAccountManager");
 	}
 
-	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
-	@Override
 	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	public List<Account> getAllAccounts() {
 		return getCurrentSession().createQuery("from Account").list();
 	}
 
-	@Override
 	@Transactional(readOnly = true)
 	public Account getAccount(Long id) {
 		try {
@@ -67,7 +64,6 @@ public class HibernateAccountManager implements AccountManager {
 		}
 	}
 
-	@Override
 	@Transactional
 	@SuppressWarnings("unused")
 	public Account save(Account account) {
@@ -75,13 +71,11 @@ public class HibernateAccountManager implements AccountManager {
 		return account;
 	}
 
-	@Override
 	@Transactional
 	public void update(Account account) {
 		getCurrentSession().update(account);
 	}
 
-	@Override
 	@Transactional
 	public void updateBeneficiaryAllocationPercentages(Long accountId,
 			Map<String, Percentage> allocationPercentages) {
@@ -92,14 +86,12 @@ public class HibernateAccountManager implements AccountManager {
 		}
 	}
 
-	@Override
 	@Transactional
 	public void addBeneficiary(Long accountId, String beneficiaryName) {
 		getAccount(accountId)
 				.addBeneficiary(beneficiaryName, Percentage.zero());
 	}
 
-	@Override
 	@Transactional
 	public void removeBeneficiary(Long accountId, String beneficiaryName,
 			Map<String, Percentage> allocationPercentages) {

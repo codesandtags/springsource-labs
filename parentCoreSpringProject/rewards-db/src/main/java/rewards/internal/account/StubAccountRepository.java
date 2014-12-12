@@ -29,7 +29,6 @@ public class StubAccountRepository implements AccountRepository {
 		accountsByCreditCard.put("1234123412341234", account);
 	}
 
-	@Override
 	public String getInfo() {
 		return TYPE;
 	}

@@ -25,7 +25,6 @@ public class StubRewardRepository implements RewardRepository {
 		return new RewardConfirmation(confirmationNumber(), contribution);
 	}
 
-	@Override
 	public String getInfo() {
 		return TYPE;
 	}

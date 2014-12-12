@@ -45,17 +45,17 @@ public class StubAccountManager implements AccountManager {
 		Logger.getLogger(StubAccountManager.class).info("Created StubAccountManager");
 	}
 
-	@Override
+	
 	public String getInfo() {
 		return INFO;
 	}
 
-	@Override
+	
 	public List<Account> getAllAccounts() {
 		return new ArrayList<Account>(accountsById.values());
 	}
 
-	@Override
+	
 	public Account getAccount(Long id) {
 		Account account = accountsById.get(id);
 		if (account == null) {
@@ -64,7 +64,7 @@ public class StubAccountManager implements AccountManager {
 		return account;
 	}
 
-	@Override
+	
 	public Account save(Account newAccount) {
 		for (Beneficiary beneficiary : newAccount.getBeneficiaries()) {
 			beneficiary.setEntityId(nextEntityId.getAndIncrement());
@@ -74,12 +74,12 @@ public class StubAccountManager implements AccountManager {
 		return newAccount;
 	}
 
-	@Override
+	
 	public void update(Account account) {
 		accountsById.put(account.getEntityId(), account);
 	}
 
-	@Override
+	
 	public void updateBeneficiaryAllocationPercentages(Long accountId, Map<String, Percentage> allocationPercentages) {
 		Account account = accountsById.get(accountId);
 		for (Entry<String, Percentage> entry : allocationPercentages.entrySet()) {
@@ -87,12 +87,12 @@ public class StubAccountManager implements AccountManager {
 		}
 	}
 
-	@Override
+	
 	public void addBeneficiary(Long accountId, String beneficiaryName) {
 		accountsById.get(accountId).addBeneficiary(beneficiaryName, Percentage.zero());
 	}
 
-	@Override
+	
 	public void removeBeneficiary(Long accountId, String beneficiaryName, Map<String, Percentage> allocationPercentages) {
 		accountsById.get(accountId).removeBeneficiary(beneficiaryName);
 		updateBeneficiaryAllocationPercentages(accountId, allocationPercentages);

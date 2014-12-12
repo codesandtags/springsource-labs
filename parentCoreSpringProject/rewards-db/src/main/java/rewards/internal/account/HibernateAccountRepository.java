@@ -28,7 +28,6 @@ public class HibernateAccountRepository implements AccountRepository {
 				"Created HibernateAccountManager");
 	}
 
-	@Override
 	public String getInfo() {
 		return INFO;
 	}

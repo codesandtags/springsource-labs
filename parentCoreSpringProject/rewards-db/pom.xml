@@ -3,11 +3,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.springsource.training.core-spring</groupId>
 	<artifactId>rewards-db</artifactId>
-	<version>3.2.0.CI-SNAPSHOT</version>
-	<packaging>jar</packaging>
 	<name>rewards-db</name>
+	<packaging>jar</packaging>
+	
 
 	<parent>
 		<groupId>com.springsource.training.core-spring</groupId>
@@ -19,25 +18,7 @@
 		<dependency>
 			<groupId>com.springsource.training.core-spring</groupId>
 			<artifactId>rewards-common</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-		</dependency>
-
-		<!-- Object Relational mapping -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>eclipselink</artifactId>
+			<version>${rewards-common.version}</version>
 		</dependency>
 	</dependencies>
 

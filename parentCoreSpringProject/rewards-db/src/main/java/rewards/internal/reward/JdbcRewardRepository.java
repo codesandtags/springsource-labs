@@ -26,7 +26,6 @@ public class JdbcRewardRepository implements RewardRepository {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
-	@Override
 	public String getInfo() {
 		return TYPE;
 	}

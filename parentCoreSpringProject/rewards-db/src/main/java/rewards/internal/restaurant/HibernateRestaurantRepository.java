@@ -13,7 +13,6 @@ public class HibernateRestaurantRepository implements RestaurantRepository {
 
 	private SessionFactory sessionFactory;
 
-	@Override
 	public String getInfo() {
 		return INFO;
 	}

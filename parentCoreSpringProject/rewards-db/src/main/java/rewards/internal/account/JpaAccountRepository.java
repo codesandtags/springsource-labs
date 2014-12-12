@@ -36,7 +36,6 @@ public class JpaAccountRepository implements AccountRepository {
 		this.entityManager = entityManager;
 	}
 
-	@Override
 	public String getInfo() {
 		return INFO;
 	}

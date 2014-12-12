@@ -34,7 +34,6 @@ public class JpaRestaurantRepository implements RestaurantRepository {
 		this.entityManager = entityManager;
 	}
 
-	@Override
 	public String getInfo() {
 		return INFO;
 	}

@@ -44,12 +44,12 @@ public class JpaAccountManager implements AccountManager {
 		this.entityManager = entityManager;
 	}
 
-	@Override
+	
 	public String getInfo() {
 		return INFO;
 	}
 
-	@Override
+	
 	@Transactional(readOnly = true)
 	@SuppressWarnings("unchecked")
 	public List<Account> getAllAccounts() {
@@ -57,7 +57,7 @@ public class JpaAccountManager implements AccountManager {
 				.getResultList();
 	}
 
-	@Override
+	
 	@Transactional(readOnly = true)
 	public Account getAccount(Long id) {
 		Account account = (Account) entityManager.find(Account.class, id);
@@ -71,20 +71,20 @@ public class JpaAccountManager implements AccountManager {
 		return account;
 	}
 
-	@Override
+	
 	@Transactional
 	public Account save(Account account) {
 		entityManager.persist(account);
 		return account;
 	}
 
-	@Override
+	
 	@Transactional
 	public void update(Account account) {
 		entityManager.merge(account);
 	}
 
-	@Override
+	
 	@Transactional
 	public void updateBeneficiaryAllocationPercentages(Long accountId,
 			Map<String, Percentage> allocationPercentages) {
@@ -95,14 +95,14 @@ public class JpaAccountManager implements AccountManager {
 		}
 	}
 
-	@Override
+	
 	@Transactional
 	public void addBeneficiary(Long accountId, String beneficiaryName) {
 		getAccount(accountId)
 				.addBeneficiary(beneficiaryName, Percentage.zero());
 	}
 
-	@Override
+	
 	@Transactional
 	public void removeBeneficiary(Long accountId, String beneficiaryName,
 			Map<String, Percentage> allocationPercentages) {

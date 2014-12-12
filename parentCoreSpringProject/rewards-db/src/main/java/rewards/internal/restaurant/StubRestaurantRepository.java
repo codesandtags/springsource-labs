@@ -31,7 +31,6 @@ public class StubRestaurantRepository implements RestaurantRepository {
 		restaurantsByMerchantNumber.put(restaurant.getNumber(), restaurant);
 	}
 
-	@Override
 	public String getInfo() {
 		return TYPE;
 	}
