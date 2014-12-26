@@ -19,9 +19,10 @@
 
 	<modules>
 		<module>rewards-common</module>
-		<module>rewards-db</module>
+		<!-- <module>rewards-db</module>  -->
 		<module>spring-intro</module>
 		<module>xml-dependency-injection</module>
+		<module>xml-dependency-injection-best-practices</module>
 		<!-- 
 		 <module>annotations</module> 
 			<module>aop</module> <module>hibernate</module> <module>jdbc</module> <module>test</module> -->
